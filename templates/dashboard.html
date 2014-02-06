@@ -91,6 +91,7 @@ $(function () {
           
         },
         progressall: function (e,data) {
+          $('#progress .progress-bar').show();
             var progress = parseInt(data.loaded / data.total * 100, 10);
             $('#progress .progress-bar').css(
                 'width',
