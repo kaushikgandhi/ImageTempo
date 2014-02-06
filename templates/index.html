@@ -1,0 +1,112 @@
+<html>
+<head>
+<title>Image Tempo - Login</title>
+	<link rel="stylesheet" href="{{ url_for('static',filename= 'css/bootstrap.css' )}}">
+	<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+	<script type="text/javascript" src="{{ url_for('static',filename='js/bootstrap.min.js') }}"></script>
+
+
+
+<link rel="stylesheet" href="{{ url_for('static',filename= 'css/main.css' )}}">
+</head>
+<body>
+<!--header-->
+<div id="wrap">
+<nav class="navbar nav-bar-top" role="navigation">
+    <div class="margin">
+    <a href="#" class="btn btn-lg btn-white"><span class="glyphicon glyphicon-th-list "></span>
+</a>
+    <a href="index" class="btn btn-lg btn-white "><span class="glyphicon  glyphicon-globe logo">ImageTempo</span></a>
+     <div class="btn-group">
+   
+       <a href="#" class="btn btn-large btn-white" >
+       <span class="glyphicon glyphicon-envelope"></span> Support</a>
+    </div>
+    <div class="btn-group" style="float:right">
+ <a href="#"  class="btn btn-large btn-white dropdown-toggle" data-toggle="dropdown">
+      <div class="glyphicon glyphicon-user"></div> Login / SignUp
+      <span class="caret"></span>
+    </a>
+    <ul class="dropdown-menu">
+      <li><a href="login"> <span class="glyphicon glyphicon-off"></span> Login</a></li>
+      <li><a href="register"><span class="glyphicon glyphicon-plus-sign"></span> Register</a></li>
+    </ul>
+    </div>
+</nav>
+
+
+
+<div class="clear"></div>
+<div class="top-content">
+    <div class="mid-content">
+        <br>
+        <div class="f-text">Login!</div>
+    </div>
+<hr>
+
+</div>
+<div class="row mid-content" >
+<div class="col-md-3"></div>
+<div class="col-md-5 login-div">
+<form method="post"  name="loginform">
+<br>
+<center><div style="font-weight:bold; font-size:20px;" class="futura">Login Now!</div></center>
+<br>  <!-- the user name input field uses a HTML5 pattern check -->
+{% if error != None %}
+<div id="alert1" class="alert alert-danger alert-dismissable">{{ error }}</div>
+{% endif %}
+<div id="alert2" class="alert alert-success alert-dismissable"></div>
+    <div class="input-group">
+        <span class="input-group-addon">Username</span>
+    <input id="login_input_username" class="form-control" type="text" name="user_name" required />
+</div>
+<br>
+    <div class="input-group">
+        <span class="input-group-addon">Password </span>
+    <input id="login_input_password" class="form-control" type="password" name="user_password" autocomplete="off" required />
+</div><br>
+   <div style="float:right;"> <input type="submit"   class="btn btn-primary" name="login" value="Log in" /></div>
+
+</form>
+<div class="col-md-3"><a href="register" class="btn btn-success">Register new account</a></div>
+</div>
+
+
+<br>
+</div></div>
+</div>
+<footer>
+<div id="footer">
+<div class="row footer-margin">
+<div class="col-md-4">
+ Copyrights <span class="glyphicon glyphicon-copyright-mark" ></span> 2014 www.imagetempo.com
+ <br>
+Developed By : <a href="http://www.mekaushik.com">Kaushik Gandhi</a>
+</div>
+<div class="col-md-4">
+<b>About Us</b><br>
+We believe simply in class. 
+<br>
+</div>
+
+<div class="col-md-4">
+  <b>Enquries and Report</b><br>
+  <a href="#"><span class="glyphicon glyphicon-envelope"></span> Contact Us </a>
+  <br>Mail Us: <a href="mailto:admin@imagetempo.com"> admin@imagetempo.com</a>
+</div>
+</div>
+</div>
+</footer>
+<script>
+        if($("#alert1").html()=="")
+        {
+            $("#alert1").hide();
+        }
+    if($("#alert2").html()=="")
+        {
+            $("#alert2").hide();
+        }
+</script>
+</body>
+</html>
+

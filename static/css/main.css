@@ -1,0 +1,224 @@
+/*main.css by kaushik gandhi*/
+@font-face {font-family: The Girl Next Door; src: url('../fonts/thegirlnextdoor.ttf');}
+@font-face {font-family: Endor; src: url('../fonts/ENDOR.ttf');}
+@font-face {font-family: Futura; src: url('../fonts/Futura');}
+@font-family-base{font-family: Futura; src: url('../fonts/Futura');}
+.nav-bar-top{
+background:  none repeat scroll 0 0 #205081;
+height: 42px;
+}
+
+.margin{
+	margin-left: 13%;
+	margin-right: 13%;
+}
+.margin-main-page{
+  margin-left: 8%;
+  margin-right: 8%;
+  margin-top: 2%;
+  margin-bottom: 2%;
+  padding: 0% 2% 2% 2%;
+}
+.btn-white{
+color: #fff;
+
+}
+.btn-white:hover,
+.btn-white:focus{
+background:  none repeat scroll 0 0  #3D7EBF;
+color: #fff;
+}
+.logo{
+	font-weight: bold;
+}
+.create_card{
+	font-weight: bold;
+}
+.mid-content{
+	margin-left: 15%;
+	margin-right: 5%;
+}
+.top-content{
+		width: 100%;
+	min-height: 70px;
+	background-color: #22ABA9;
+	margin-top: 0px;
+}
+hr{
+border-color: #CCCCCC;
+     border-style: solid solid solid none;
+    border-width: 1px 0px 0px 0px;
+}
+.bordered-div{
+	border-color: #CCCCCC #CCCCCC #CCCCCC -moz-use-text-color;
+    border-image: none;
+    border-style: solid solid solid none;
+    border-top-right-radius: 5px;
+    border-width: 1px 1px 1px medium;
+}
+.f-text{
+  font-family:'Futura'; font-weight:bold; font-size:30px;
+}
+.user{
+height: 100px;
+width: 100px;
+background-size: 100% 100%;
+background-image:url('../images/user.png');
+background-color:#cccccc;
+}
+.user-pic{
+height: 20px;
+width: 25px;
+background-size: 100% 100%;
+background-image:url('../images/user.png');
+background-color:#cccccc;
+}
+.avatar {
+	border-radius: 50%;
+	-moz-border-radius: 50%;
+	-webkit-border-radius: 50%;
+	}
+  .featurette-image{
+    border-radius: 10%;
+  -moz-border-radius: 10%;
+  -webkit-border-radius: 10%;
+  }
+.gap{
+	width: 45px;
+}
+.user-info{
+	line-height: 30px;
+}
+select{
+  height: 150px;
+  width: 100%;
+  background-color: #FFFFFF;
+    background-image: none;
+    border: 1px solid #CCCCCC;
+    border-radius: 4px;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;
+    color: #555555;
+    display: block;
+    font-size: 14px;
+    line-height: 1.42857;
+    padding: 6px 12px;
+    transition: border-color 0.15s ease-in-out 0s, box-shadow 0.15s ease-in-out 0s;
+    vertical-align: middle;
+    width: 100%;
+}
+.colorbox{
+  height: 34px;
+  width: 70%;
+  background-color: #FFFFFF;
+    background-image: none;
+    border: 1px solid #CCCCCC;
+    border-radius: 4px;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;
+    color: #555555;
+    font-size: 14px;
+    line-height: 1.42857;
+    padding: 6px 12px;
+    transition: border-color 0.15s ease-in-out 0s, box-shadow 0.15s ease-in-out 0s;
+    vertical-align: middle;
+}
+.bingo-table{
+	text-align: center;
+border: 2px solid black;
+width: 100%;
+}
+.bingo-table td{
+border: 2px solid black;
+width: 20%;
+height: 70px;
+}
+.head{
+	background-color: #fe9810;
+	color: #000;
+	font-weight: bold;
+}
+
+.login-div{
+  background-color: #fff;
+	
+	padding: 4%;
+  -moz-box-shadow:  3px 3px 3px -1px #ccc; 
+  -webkit-box-shadow:  3px 3px 3px -1px #ccc;
+  box-shadow:         3px 5px 3px -1px #ccc;
+}
+
+.futura{
+  font-family: Futura;
+}
+   /* Sticky footer styles
+      -------------------------------------------------- */
+
+      html,
+      body {
+        height: 108%;
+        background-color: #F2F1F0;
+        font-family: Futura;
+        /* The html and body elements cannot have any padding or margin. */
+      }
+
+      /* Wrapper for page content to push down footer */
+      #wrap {
+        min-height: 100%;
+        height: auto ;
+        /* Negative indent footer by it's height */
+        margin: 0 auto -60px;
+      }
+
+      /* Set the fixed height of the footer here */
+      #push,
+      #footer {
+        height: 100px;
+
+      }
+      #footer {
+        background-color: #205081;
+        border-top:1px solid #000;
+        color: #fff;
+      }
+      #footer a{
+      	color: #fff;
+      	text-decoration: underline;
+      }
+      /* Lastly, apply responsive CSS fixes as necessary */
+      @media (max-width: 767px) {
+        #footer {
+          margin-left: -20px;
+          margin-right: -20px;
+          padding-left: 20px;
+          padding-right: 20px;
+        }
+      }
+
+.footer-margin{
+	margin: 1% 1% 0.5% 13%;
+}
+
+.box{
+  background-color: #fff;
+  -moz-box-shadow:  3px 3px 3px -1px #ccc; 
+  -webkit-box-shadow:  3px 3px 3px -1px #ccc;
+    box-shadow:         3px 5px 3px -1px #ccc;
+}
+.main-page-body{
+   background: -moz-linear-gradient(top, #22ABA9 0%, #22ABA9 75%, #F2F1F0 50%, #F2F1F0 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#22ABA9), color-stop(75%,#22ABA9), color-stop(50%,#F2F1F0), color-stop(100%,#F2F1F0)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top, #22ABA9 0%,#22ABA9 75%,#F2F1F0 50%,#F2F1F0 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top, #22ABA9 0%,#22ABA9 75%,#F2F1F0 50%,#F2F1F0 100%); /* Opera11.10+ */
+    background: -ms-linear-gradient(top, #22ABA9 0%,#22ABA9 75%,#F2F1F0 50%,#F2F1F0 100%); /* IE10+ */
+    background: linear-gradient(top, #22ABA9 0%,#22ABA9 75%,#F2F1F0 50%,#F2F1F0 100%); /* W3C */
+
+}
+.lead{
+  font-family:'Futura'; 
+   font-size:19px;
+}
+
+.btn-custom-orange { background-color: hsl(25, 97%, 60%) !important; background-repeat: repeat-x; filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#fdc39a", endColorstr="#fb8836"); background-image: -khtml-gradient(linear, left top, left bottom, from(#fdc39a), to(#fb8836)); background-image: -moz-linear-gradient(top, #fdc39a, #fb8836); background-image: -ms-linear-gradient(top, #fdc39a, #fb8836); background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #fdc39a), color-stop(100%, #fb8836)); background-image: -webkit-linear-gradient(top, #fdc39a, #fb8836); background-image: -o-linear-gradient(top, #fdc39a, #fb8836); background-image: linear-gradient(#fdc39a, #fb8836); border-color: #fb8836 #fb8836 hsl(25, 97%, 55%); color: #333 !important; text-shadow: 0 1px 1px rgba(255, 255, 255, 0.33); -webkit-font-smoothing: antialiased; }
+.btn-custom-green { background-color: hsl(140, 60%, 56%) !important; background-repeat: repeat-x; filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#bdeece", endColorstr="#4bd278"); background-image: -khtml-gradient(linear, left top, left bottom, from(#bdeece), to(#4bd278)); background-image: -moz-linear-gradient(top, #bdeece, #4bd278); background-image: -ms-linear-gradient(top, #bdeece, #4bd278); background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #bdeece), color-stop(100%, #4bd278)); background-image: -webkit-linear-gradient(top, #bdeece, #4bd278); background-image: -o-linear-gradient(top, #bdeece, #4bd278); background-image: linear-gradient(#bdeece, #4bd278); border-color: #4bd278 #4bd278 hsl(140, 60%, 49%); color: #333 !important; text-shadow: 0 1px 1px rgba(255, 255, 255, 0.46); -webkit-font-smoothing: antialiased; }
+.colorful{
+  color:#DE4573;
+}
