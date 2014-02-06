@@ -83,23 +83,27 @@ $(function () {
     $('#fileupload').fileupload({
         url: url,
         dataType: 'json',
+        beforeSend: function(){
+          $('#progress .progress-bar').css(
+                'width','0%'
+            );
+        },
         success: function (data) {
                 
                 //alert(JSON.stringify(data));
                 $('#files').append('<img src="'+data.url+'" height="300" width="300" /><br>'+data.name+'<br>');
-                $('#progress .progress-bar').hide('slow');
+                //$('#progress').hide();
           
         },
         progressall: function (e,data) {
-          $('#progress .progress-bar').show();
-            var progress = parseInt(data.loaded / data.total * 100, 10);
+          //$('#progress').show();
+            var progress=parseInt(data.loaded / data.total * 100, 10);
             $('#progress .progress-bar').css(
                 'width',
                 progress + '%'
             );
         }
-    }).prop('disabled', !$.support.fileInput)
-        .parent().addClass($.support.fileInput ? undefined : 'disabled');
+    });
 });
 </script>
 <a href="/logout">Logout</a>
