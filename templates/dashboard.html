@@ -87,11 +87,16 @@ $(function () {
           $('#progress .progress-bar').css(
                 'width','0%'
             );
+          $('#progress').show();
         },
         success: function (data) {
                 
                 //alert(JSON.stringify(data));
                 $('#files').append('<img src="'+data.url+'" height="300" width="300" /><br>'+data.name+'<br>');
+                $('#progress .progress-bar').css(
+                'width','0%'
+              );
+                $('#progress').hide();
                 //$('#progress').hide();
           
         },
