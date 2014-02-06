@@ -87,10 +87,10 @@ $(function () {
                 
                 //alert(JSON.stringify(data));
                 $('#files').append('<img src="'+data.url+'" height="300" width="300" /><br>'+data.name+'<br>');
-
+                $('#progress .progress-bar').hide('slow');
           
         },
-        progressall: function (data) {
+        progressall: function (e,data) {
             var progress = parseInt(data.loaded / data.total * 100, 10);
             $('#progress .progress-bar').css(
                 'width',
