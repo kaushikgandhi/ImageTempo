@@ -4,6 +4,7 @@ import config
 from flask import request, url_for, jsonify
 import os
 from werkzeug import secure_filename
+import urllib
 # from flask_bootstrap import Bootstrap
 # from flask_appconfig import AppConfig
 app =  Flask(__name__)
@@ -41,6 +42,8 @@ def dashboard():
 		return	redirect(url_for('/'))
 @app.route('/get_ip', methods=['GET', 'POST'])
 def get_ip():
+	location = urllib.urlopen('http://api.hostip.info/get_html.php?ip='+request.remote_addr+'&position=true').read()
+	print location
 	return  request.remote_addr
 
 def create_tables():
