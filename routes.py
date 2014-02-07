@@ -34,10 +34,14 @@ def register():
 
 @app.route('/dashboard')
 def dashboard():
+	ip = '5.5'
 	if(session['logged_in']==True) :
-		return render_template('dashboard.html')
+		return render_template('dashboard.html',ip=ip)
 	else :
 		return	redirect(url_for('/'))
+@app.route('/get_ip', methods=['GET', 'POST'])
+def get_ip():
+	return  request.remote_addr
 
 def create_tables():
 	db = MySQLdb.connect(user=config.DB_USERNAME, passwd=config.DB_PASSWORD, db=config.DB_NAME)
