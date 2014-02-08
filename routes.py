@@ -22,6 +22,7 @@ def index():
 			error="Invalid User or Password"
 		else :
 			session['logged_in']=True
+			session['user_name']=request.form['user_name']
 			return redirect(url_for('dashboard'))
 	return render_template('index.html' , error=error)
 

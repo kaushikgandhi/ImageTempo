@@ -4,8 +4,8 @@
 	<link rel="stylesheet" href="{{ url_for('static',filename= 'css/bootstrap.css' )}}">
 	<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
 	<script type="text/javascript" src="{{ url_for('static',filename='js/bootstrap.js') }}"></script>
-
-
+<script src="{{ url_for('static',filename='chosen/chosen.jquery.js') }}" type="text/javascript"></script>
+<link rel="stylesheet" href="{{ url_for('static',filename= 'chosen/chosen.css' )}}">
 
 <link rel="stylesheet" href="{{ url_for('static',filename= 'css/main.css' )}}">
 </head>
@@ -26,12 +26,11 @@
     </div>
     <div class="btn-group" style="float:right">
  <a href="#"  class="btn btn-large btn-white dropdown-toggle" data-toggle="dropdown">
-      <div class="glyphicon glyphicon-user"></div> Login / SignUp
+      <div class="glyphicon glyphicon-user"></div> {{session['user_name']}}
       <span class="caret"></span>
     </a>
     <ul class="dropdown-menu">
-      <li><a href="login"> <span class="glyphicon glyphicon-off"></span> Login</a></li>
-      <li><a href="register"><span class="glyphicon glyphicon-plus-sign"></span> Register</a></li>
+      <li><a href="/logout"> <span class="glyphicon glyphicon-off"></span> Logout</a></li>
     </ul>
     </div>
 </nav>
@@ -52,7 +51,8 @@
         <!-- The file input field used as target for the file upload widget -->
         <input id="fileupload" type="file" name="data_file">
     </span></span>
-<span class="cold-md-4" id="client_ip"></span>
+    <span class="col-md-4" id=""></span>
+<span class="col-md-4" style="margin-top:-10px;"><span class="glyphicon btn-lg glyphicon-screenshot"></span> &nbsp <span id="client_ip"></span></span>
     </span>
     <br>
     <br>
@@ -62,6 +62,10 @@
     </div>
     <!-- The container for the uploaded files -->
    <div id="files" class="files"></div>
+   <span class="row">
+      <span class="col-md-3">Add Tags :</span>
+      <span class="col-md-9"><select data-placeholder="..." style="width:350px;" id="tags" multiple class="chosen-select"></select></span>
+   </span>
 </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -70,7 +74,13 @@
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
-
+<!-- modal window onClose operations -->
+<script>
+  
+  $('#postImage').on('hidden.bs.modal', function () {
+    $("#files").html('');
+})
+</script>
 
 <script type="text/javascript" src="http://j.maxmind.com/app/geoip.js"></script>
 
@@ -101,7 +111,7 @@
 $(function () {
   //initialize();
     'use strict';
-    $("#client_ip").html(geoip_city());
+    $("#client_ip").html(''+geoip_city());
     // Change this to the location of your server-side upload handler:
     var url = window.location.hostname === 'blueimp.github.io' ?
                 '//jquery-file-upload.appspot.com/' : '/+upload';
@@ -116,7 +126,7 @@ $(function () {
         },
         success: function (data) {
                 
-                $('#files').append('<img src="'+data.url+'" height="300" width="300" /><br>'+data.name+'<br>');
+                $('#files').append('<img src="'+data.url+'" height="300"  /><br><br>Image Name: '+data.name+'<br><br>');
                 $('#progress .progress-bar').css(
                 'width','0%'
               );
@@ -135,8 +145,41 @@ $(function () {
     });
 });
 </script>
+<!-- Invoke chosen -->
+<script>
+  $(".chosen-select").chosen({no_results_text:"Add Tag ",max_selected_options: 5,width: "95%",height: "50%"});
+</script>
 
-<a href="/logout">Logout</a>
+<!-- use chosen js for tag selection -->
+<script>
+var dropDown = $('.chosen-select');
+ $('.default').keypress( function (evt) {
+  console.log(evt.which);
+           var stroke, _ref, target, list;
+           // get keycode
+           stroke = (_ref = evt.which) != null ? _ref : evt.keyCode;
+           target = $(evt.target);               
+           // get the list of current options
+           list = target.parents('.chzn-container').find('.chzn-choices li.search-choice > span').map(function () { return $(this).text(); }).get();
+           if (stroke === 32 || stroke === 44) {
+              var value = $.trim(target.val());
+              // if the option does not exists
+              if ($.inArray(value,list) < 0) {
+                 var option = $('<option>');
+                 option.text(value).val(value).appendTo(dropDown);
+                 option.attr('selected','selected');
+                 // add the option and set as selected
+              }
+              // trigger the update event
+              dropDown.trigger("chosen:updated");
+
+              return false;
+           }
+
+        });
+
+</script>
+
 </div>
 <footer>
 <div id="footer">
@@ -160,16 +203,6 @@ We believe simply in class.
 </div>
 </div>
 </footer>
-<script>
-        if($("#alert1").html()=="")
-        {
-            $("#alert1").hide();
-        }
-    if($("#alert2").html()=="")
-        {
-            $("#alert2").hide();
-        }
-</script>
 </body>
 </html>
 
