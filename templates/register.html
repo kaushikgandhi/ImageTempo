@@ -42,7 +42,7 @@
         <div class="f-text">Register New Account</div>
     </div>
 <hr>
-
+{{ messages }}
 </div>
 <div class="row mid-content" >
 <br></br>
@@ -50,31 +50,14 @@
 <div class="col-md-5 login-div">
 
 <!-- register form -->
-<form method="post" action="" name="registerform">
+<form method="post" action="">
 
 <center><div style="font-weight:bold; font-size:20px;" class="futura">Register Now!</div></center>
 <br>  <!-- the user name input field uses a HTML5 pattern check -->
-<div id="alert1" class="alert alert-danger alert-dismissable"><?php
-// show potential errors / feedback (from registration object)
-if (isset($registration)) {
-    if ($registration->errors) {
-        foreach ($registration->errors as $error) {
-            echo $error;
-        }
-    }
-   
-}
-?>
-</div>
-<div id="alert2" class="alert alert-success alert-dismissable"><?php
-if (isset($registration)) {
-	 if ($registration->messages) {
-        foreach ($registration->messages as $message) {
-            echo $message . " <a href='login.php' class='btn btn-success btn-sm'>Login Now</a>";
-        }
-    }
-   }
-?></div>
+
+{% for message in get_flashed_messages() %}
+<div id="alert1" class="alert alert-danger alert-dismissable">{{ message }}</div>
+{% endfor %}
     <div class="input-group">
   		<span class="input-group-addon">User Name</span>
     <input id="login_input_username" class="form-control"  type="text" pattern="[a-zA-Z0-9]{2,64}" name="user_name" required />

@@ -52,9 +52,9 @@
 <br>
 <center><div style="font-weight:bold; font-size:20px;" class="futura">Login Now!</div></center>
 <br>  <!-- the user name input field uses a HTML5 pattern check -->
-{% if error != None %}
-<div id="alert1" class="alert alert-danger alert-dismissable">{{ error }}</div>
-{% endif %}
+{% for message in get_flashed_messages() %}
+<div id="alert1" class="alert alert-danger alert-dismissable">{{ message }}</div>
+{% endfor %}
 <div id="alert2" class="alert alert-success alert-dismissable"></div>
     <div class="input-group">
         <span class="input-group-addon">Username</span>

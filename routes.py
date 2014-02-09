@@ -17,10 +17,8 @@ def login_required(test):
 	@wraps(test)
 	def wrap(*args,**kwargs):
 		if 'logged_in' in session:
-			print('hi yeah')
 			return test(*args,**kwargs)
 		else:
-			print('hi no')
 			flash('you need to login first')
 			return redirect(url_for('login'))
 	return wrap
@@ -34,12 +32,25 @@ def index():
 	if 'logged_in' in session:
 		return redirect(url_for('dashboard'))
 	if request.method == 'POST'	:
-		if request.form['user_name'] != 'admin' or request.form['user_password'] !='admin' :
-			error="Invalid User or Password"
-		else :
-			session['logged_in']=True
-			session['user_name']=request.form['user_name']
-			return redirect(url_for('dashboard'))
+		db = MySQLdb.connect(user=config.DB_USERNAME, passwd=config.DB_PASSWORD, db=config.DB_NAME)
+		cursor = db.cursor(MySQLdb.cursors.DictCursor)
+		try:
+			cursor.execute('select * from User where user_name = %s AND password = %s',[request.form['user_name'],request.form['user_password']])
+			result=cursor.fetchone()
+			db.close()
+			#flash(result)
+			#return redirect(url_for('index'))
+			if(result is not None):
+				session['logged_in']=True
+				session['user_name']=request.form['user_name']
+				return redirect(url_for('dashboard'))
+			else:
+				flash('User / Password is incorrect')
+				return render_template('index.html' , error=error)
+
+		except (MySQLdb.Error, MySQLdb.Warning) as e:
+			flash('User / Password is incorrect'+str(e))
+			return render_template('index.html' , error=error)
 	return render_template('index.html' , error=error)
 
 @app.route('/register',methods=["GET","POST"])
@@ -47,11 +58,18 @@ def register():
 	error=None
 
 	if request.method == 'POST'	:
-		db = MySQLdb.connect(user=config.DB_USERNAME, passwd=config.DB_PASSWORD, db=config.DB_NAME)
-		cursor = db.cursor(MySQLdb.cursors.DictCursor)
-		cursor.execute('''INSERT into User (user_name,password)
-            values (%s,%s,%s)''',(request.form['user_name'],request.form['user_password_new']))
-		return render_template('register.html' , error=error,message="Registred Successfully")
+		try:
+			db = MySQLdb.connect(user=config.DB_USERNAME, passwd=config.DB_PASSWORD, db=config.DB_NAME)
+			cursor = db.cursor(MySQLdb.cursors.DictCursor)
+			cursor.execute('''INSERT into User (user_name,password,user_email)
+            	values (%s,%s,%s)''',(request.form['user_name'],request.form['user_password_new'],request.form['user_email']))
+			db.commit()
+			db.close()
+			flash("You have registered Successfully.You may now login!")	
+			return redirect(url_for('index'))
+		except (MySQLdb.Error, MySQLdb.Warning) as e:
+			flash("There was an error during registration " +str(e))	
+		return render_template('register.html' , error=error,message="hi")
 
 	return render_template('register.html' , error=error)
 
@@ -68,9 +86,9 @@ def dashboard():
 def create_tables():
 	db = MySQLdb.connect(user=config.DB_USERNAME, passwd=config.DB_PASSWORD, db=config.DB_NAME)
 	cursor = db.cursor(MySQLdb.cursors.DictCursor)
-	cursor.execute('Create Table User(id Int(10) NOT NULL AUTO_INCREMENT,user_email varchar(50) ,user_name varchar(50),password varchar(100),PRIMARY KEY(id))')
-	cursor.execute('Insert into User values(1,"admin","admin")')
-	cursor.execute('Insert into User values(1,"demo","demo")')
+	cursor.execute('Create Table User(user_email varchar(50) ,user_name varchar(50),password varchar(100),PRIMARY KEY(user_name,user_email))')
+	cursor.execute('Insert into User values("admin@admin.com","admin","admin")')
+	cursor.execute('Insert into User values("demo@demo.com","demo","demo")')
 	db.commit()
 	db.close()
 	return "done"
@@ -82,6 +100,7 @@ def logout():
 		flash('you need to login first')
 		return redirect(url_for('index'))
 	session.pop('logged_in',None)
+	flash('You have logged out Successfully!')
 	return redirect(url_for('index'))
 
 
