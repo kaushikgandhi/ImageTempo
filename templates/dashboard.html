@@ -9,7 +9,7 @@
 
 <link rel="stylesheet" href="{{ url_for('static',filename= 'css/main.css' )}}">
 </head>
-<body>
+<body class="main-page-body">
 <!--header-->
 <div id="wrap">
 <nav class="navbar nav-bar-top" role="navigation">
@@ -34,7 +34,7 @@
     </ul>
     </div>
 </nav>
-
+<div class="margin-main-page box">
 <div class="modal fade" id="postImage">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -64,7 +64,7 @@
    <div id="files" class="files"></div>
    <span class="row">
       <span class="col-md-3">Add Tags :</span>
-      <span class="col-md-9"><select data-placeholder="..." style="width:350px;" id="tags" multiple class="chosen-select"></select></span>
+      <span class="col-md-9"><select data-placeholder="add tags seperate by commas..." style="width:350px;" id="tags" multiple class="chosen-select"></select></span>
    </span>
 </div>
       <div class="modal-footer">
@@ -147,7 +147,7 @@ $(function () {
 </script>
 <!-- Invoke chosen -->
 <script>
-  $(".chosen-select").chosen({no_results_text:"Add Tag ",max_selected_options: 5,width: "95%",height: "50%"});
+  $(".chosen-select").chosen({no_results_text:"Add Tag ",max_selected_options: 5,width: "95%",height: "50%",disable_search_threshold: 0});
 </script>
 
 <!-- use chosen js for tag selection -->
@@ -180,6 +180,7 @@ var dropDown = $('.chosen-select');
 
 </script>
 
+</div>
 </div>
 <footer>
 <div id="footer">

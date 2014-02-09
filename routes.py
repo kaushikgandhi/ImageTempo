@@ -5,6 +5,7 @@ from flask import request, url_for, jsonify
 import os
 from werkzeug import secure_filename
 import urllib
+from functools import wraps
 # from flask_bootstrap import Bootstrap
 # from flask_appconfig import AppConfig
 app =  Flask(__name__)
@@ -12,11 +13,26 @@ app.config.from_object('config')
 app.secret_key = 'dfmm234xdsfdfssf2133edssdgfqwewqewr'
 
 
+def login_required(test):
+	@wraps(test)
+	def wrap(*args,**kwargs):
+		if 'logged_in' in session:
+			print('hi yeah')
+			return test(*args,**kwargs)
+		else:
+			print('hi no')
+			flash('you need to login first')
+			return redirect(url_for('login'))
+	return wrap
+
+
 @app.route('/',methods=["GET","POST"])
 @app.route('/index',methods=["GET","POST"])
 @app.route('/login',methods=["GET","POST"])
 def index():
 	error=None
+	if 'logged_in' in session:
+		return redirect(url_for('dashboard'))
 	if request.method == 'POST'	:
 		if request.form['user_name'] != 'admin' or request.form['user_password'] !='admin' :
 			error="Invalid User or Password"
@@ -29,35 +45,43 @@ def index():
 @app.route('/register',methods=["GET","POST"])
 def register():
 	error=None
-	if session['logged_in'] == True	:
-			return redirect(url_for('dashboard'))
+
+	if request.method == 'POST'	:
+		db = MySQLdb.connect(user=config.DB_USERNAME, passwd=config.DB_PASSWORD, db=config.DB_NAME)
+		cursor = db.cursor(MySQLdb.cursors.DictCursor)
+		cursor.execute('''INSERT into User (user_name,password)
+            values (%s,%s,%s)''',(request.form['user_name'],request.form['user_password_new']))
+		return render_template('register.html' , error=error,message="Registred Successfully")
 
 	return render_template('register.html' , error=error)
 
+
 @app.route('/dashboard')
 def dashboard():
-	ip = '5.5'
-	if(session['logged_in']==True) :
-		return render_template('dashboard.html',ip=ip)
-	else :
-		return	redirect(url_for('/'))
-@app.route('/get_ip', methods=['GET', 'POST'])
-def get_ip():
-	location = urllib.urlopen('http://api.hostip.info/get_html.php?ip='+request.remote_addr+'&position=true').read()
-	print location
-	return  request.remote_addr
+	if 'logged_in' not in session:
+		flash('you need to login first')
+		return redirect(url_for('index'))
+	return render_template('dashboard.html')
 
+
+@app.route('/configure_tables')
 def create_tables():
 	db = MySQLdb.connect(user=config.DB_USERNAME, passwd=config.DB_PASSWORD, db=config.DB_NAME)
 	cursor = db.cursor(MySQLdb.cursors.DictCursor)
-	cursor.execute('Insert into Info values("abc")')
+	cursor.execute('Create Table User(id Int(10) NOT NULL AUTO_INCREMENT,user_email varchar(50) ,user_name varchar(50),password varchar(100),PRIMARY KEY(id))')
+	cursor.execute('Insert into User values(1,"admin","admin")')
+	cursor.execute('Insert into User values(1,"demo","demo")')
 	db.commit()
 	db.close()
+	return "done"
 
 
 @app.route('/logout')
 def logout():
-	session['logged_in']=None
+	if 'logged_in' not in session:
+		flash('you need to login first')
+		return redirect(url_for('index'))
+	session.pop('logged_in',None)
 	return redirect(url_for('index'))
 
 
@@ -79,6 +103,7 @@ def uploaded_file(filename):
     return send_from_directory(config.UPLOAD_FOLDER,
                                filename)
 
+@login_required
 @app.route('/+upload', methods=['GET', 'POST'])
 def upload():
     if request.method == 'GET':
@@ -117,6 +142,8 @@ def upload():
                        size=file_size,
                        url=file_url,
                        thumbnail=thumbnail_url)
+
+#--------------------------uploader ends --------------------------
 
 if __name__ == '__main__':
 	app.run(debug=True,host='0.0.0.0', port=8080)

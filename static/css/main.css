@@ -201,7 +201,8 @@ height: 70px;
   background-color: #fff;
   -moz-box-shadow:  3px 3px 3px -1px #ccc; 
   -webkit-box-shadow:  3px 3px 3px -1px #ccc;
-    box-shadow:         3px 5px 3px -1px #ccc;
+    box-shadow:    3px 5px 3px -1px #ccc;
+    min-height: 600px;
 }
 .main-page-body{
    background: -moz-linear-gradient(top, #22ABA9 0%, #22ABA9 75%, #F2F1F0 50%, #F2F1F0 100%); /* FF3.6+ */
