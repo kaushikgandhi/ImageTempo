@@ -1,13 +1,33 @@
 /*main.css by kaushik gandhi*/
 @font-face {font-family: The Girl Next Door; src: url('../fonts/thegirlnextdoor.ttf');}
 @font-face {font-family: Endor; src: url('../fonts/ENDOR.ttf');}
-@font-face {font-family: Futura; src: url('../fonts/Futura');}
-@font-family-base{font-family: Futura; src: url('../fonts/Futura');}
+@font-face {font-family: Futura; src: url('../fonts/cpo.ttf');}
+@font-family-base{font-family: Futura; src: url('../fonts/cpo.ttf');}
 .nav-bar-top{
 background:  none repeat scroll 0 0 #205081;
 height: 42px;
 }
 
+
+.post{
+  padding-left: 50px;
+  padding-top: 50px;
+  font-family:'Futura'; 
+
+}
+.date{
+    font-size: 25px;
+  font-weight: bold;
+}
+.time{
+    font-size: 18px;
+  font-weight: bold;
+  padding-bottom: 2px;
+}
+.label{
+   font-size: 15px;
+  font-weight: bold;
+}
 .margin{
 	margin-left: 13%;
 	margin-right: 13%;
@@ -60,8 +80,8 @@ border-color: #CCCCCC;
   font-family:'Futura'; font-weight:bold; font-size:30px;
 }
 .user{
-height: 100px;
-width: 100px;
+height: 150px;
+width: 150px;
 background-size: 100% 100%;
 background-image:url('../images/user.png');
 background-color:#cccccc;

@@ -36,13 +36,14 @@ def index():
 		cursor = db.cursor(MySQLdb.cursors.DictCursor)
 		try:
 			cursor.execute('select * from User where user_name = %s AND password = %s',[request.form['user_name'],request.form['user_password']])
-			result=cursor.fetchone()
+			result=cursor.fetchall()
 			db.close()
 			#flash(result)
 			#return redirect(url_for('index'))
 			if(result is not None):
 				session['logged_in']=True
 				session['user_name']=request.form['user_name']
+				session['user_email']=result[0]['user_email']
 				return redirect(url_for('dashboard'))
 			else:
 				flash('User / Password is incorrect')

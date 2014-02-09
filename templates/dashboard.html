@@ -35,6 +35,45 @@
     </div>
 </nav>
 <div class="margin-main-page box">
+
+<!--          main body of the page starts from here       -->
+
+<br>
+<div class="row">
+<div class="col-md-2"><div class="user avatar"></div></div>
+<div class="col-md-4"><div class="UserInfo">
+<br>
+<span class="label label-default time" >User Id : {{session['user_name']}}</span> </br></br>
+  <span class="label label-default time" >Email : {{session['user_email']}}</span> <br></br>
+  <span class="label label-default time" >Number Of Posts : 1</span> 
+</div></div>
+</div>
+<br>
+<br>
+<ul class="nav nav-tabs">
+  <li class="active"><a href="#">Recent Posts</a></li>
+  <li><a href="#">Popular Posts</a></li>
+  <li><a href="#">My Intrests</a></li>
+</ul>
+
+<div class="row post">
+  <div class="col-md-3">
+  <span class="date glyphicon glyphicon-list-alt"></span> <span class="date ">12-2-2014</span><br>
+  <span class="time glyphicon glyphicon-time"></span> <span class="time "> 12:00 Pm </span>
+  </div>
+
+</div>
+
+
+<!-- Main page ends here -->
+
+
+
+
+
+
+<!-- Modal window starts here -->
+
 <div class="modal fade" id="postImage">
   <div class="modal-dialog">
     <div class="modal-content">
