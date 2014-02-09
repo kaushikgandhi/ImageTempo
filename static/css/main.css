@@ -36,8 +36,9 @@ height: 42px;
   margin-left: 8%;
   margin-right: 8%;
   margin-top: 2%;
-  margin-bottom: 2%;
+  margin-bottom: 10%;
   padding: 0% 2% 2% 2%;
+
 }
 .btn-white{
 color: #fff;
@@ -223,6 +224,8 @@ height: 70px;
   -webkit-box-shadow:  3px 3px 3px -1px #ccc;
     box-shadow:    3px 5px 3px -1px #ccc;
     min-height: 600px;
+    height: auto;
+
 }
 .main-page-body{
    background: -moz-linear-gradient(top, #22ABA9 0%, #22ABA9 75%, #F2F1F0 50%, #F2F1F0 100%); /* FF3.6+ */
