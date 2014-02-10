@@ -6,6 +6,7 @@ import os
 from werkzeug import secure_filename
 import urllib
 from functools import wraps
+import json
 # from flask_bootstrap import Bootstrap
 # from flask_appconfig import AppConfig
 app =  Flask(__name__)
@@ -103,7 +104,19 @@ def logout():
 	session.pop('logged_in',None)
 	flash('You have logged out Successfully!')
 	return redirect(url_for('index'))
+#-------------Post an Image---------------
 
+@app.route('/post_image',methods=["GET","POST"])
+def post_image():
+	print 'hi'
+	if request.method == 'POST'	:
+		#flash(request.form['tags'])
+		try:
+			print str(request.form['tags'])
+			return request.form['tags']
+		except Exception as e:
+			print str(e)
+			return request.form['description']+str(e)
 
 #--------------uploader -------------------
 def save_file(data_file, file_name):
@@ -123,7 +136,8 @@ def uploaded_file(filename):
     return send_from_directory(config.UPLOAD_FOLDER,
                                filename)
 
-@login_required
+
+
 @app.route('/+upload', methods=['GET', 'POST'])
 def upload():
     if request.method == 'GET':

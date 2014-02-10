@@ -60,7 +60,7 @@
   <div class="col-md-3">
   <span class="date glyphicon glyphicon-list-alt"></span> <span class="date ">12-2-2014</span><br>
   <span class="time glyphicon glyphicon-time"></span> <span class="time "> 12:00 Pm </span><br>
-  <span class="glyphicon glyphicon-tags time">Tags:</span><br>
+  <span class="glyphicon glyphicon-tags time"> Tags:</span><br>
   <div class="tags"> 
   <a href="#">tag1</a> , <a href="#">tag2</a>, <a href="#">tag3</a>, <a href="#">tag4</a>, <a href="#">tag5</a>
   </div>
@@ -74,13 +74,7 @@
 </div>
 </div>
 
-
 <!-- Main page ends here -->
-
-
-
-
-
 
 <!-- Modal window starts here -->
 
@@ -92,7 +86,7 @@
         <h4 class="modal-title">Post a Tempo</h4>
       </div>
       <div class="modal-body">
-      <textarea cols="15" rows="5" class="form-control" placeholder="Add a description ..."></textarea>
+      <textarea cols="15" id="description" rows="5" class="form-control" placeholder="Add a description ..."></textarea>
       <br>
    <span class="row"><span class="col-md-4"><span class="btn btn-success fileinput-button">
         <i class="glyphicon glyphicon-plus"></i>
@@ -118,11 +112,30 @@
 </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Post</button>
+        <button id="image_post_btn" type="button" class="btn btn-primary">Post</button>
       </div>
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
+
+<!-- post image -->
+<script>
+$('#image_post_btn').click(function(){
+  var selected_values=$('.chosen-select').val();
+$.ajax({
+        type : "POST",
+        url : "/post_image",
+        data: {description: $('#description').val()
+        ,tags: String($('.chosen-select').val())},
+        beforeSend: function(){
+          alert( $('.chosen-select').val());
+        },
+        success: function(result) {
+            console.log($('.chosen-select').val());
+        }
+    });
+});
+</script>
 <!-- modal window onClose operations -->
 <script>
   
