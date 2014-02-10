@@ -53,8 +53,8 @@
 <br>
 <br>
 <ul class="nav nav-tabs">
-  <li id="recent" class="active"><a href="javascript:void(0);" id="recent_link">Recent Posts</a></li>
-  <li id="popular"><a href="javascript:void(0);" id="popular_link">Popular Posts</a></li>
+  <li id="recent" class="active"><a href="javascript:void(0);" id="recent_link">My Recent Posts</a></li>
+  <li id="popular"><a href="javascript:void(0);" id="popular_link">My Popular Posts</a></li>
   <li id="interest"><a href="javascript:void(0);" id="interest_link">My Intrests</a></li>
 </ul>
 <div id="recent_posts">
@@ -158,6 +158,7 @@ $.ajax({
             $('#postImage').modal('toggle');
             get_recentposts();
             console.log(result);
+            $('#image_post_btn').html('Post');
 
         }
     });
