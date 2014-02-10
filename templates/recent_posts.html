@@ -1,0 +1,24 @@
+
+{% for post in posts %}
+
+<div class="row post">
+  <div class="col-md-3">
+  <span class="date glyphicon glyphicon-list-alt"></span> <span class="date ">{{ post.date_time | get_date }}</span><br>
+  <span class="time glyphicon glyphicon-time"></span> <span class="time "> {{ post.date_time | get_time }} </span><br>
+  <span class="glyphicon glyphicon-tags time"> Tags:</span><br>
+  {% for tag in post.tags.split(',') %}
+  <a href="/tags/{{ tag }}">{{tag}}</a> ,
+  {% endfor %}
+  <div class="time">Description</div>
+  <div class="description">
+    {{ post.description }}
+  </div>
+  </div>
+  <div class="col-md-8">
+  <img src="{{ post.image_path }}"  height="400"  />
+</div>
+</div>
+<br>
+<hr>
+
+{% endfor %}

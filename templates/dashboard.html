@@ -8,6 +8,8 @@
 <link rel="stylesheet" href="{{ url_for('static',filename= 'chosen/chosen.css' )}}">
 
 <link rel="stylesheet" href="{{ url_for('static',filename= 'css/main.css' )}}">
+<link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+
 </head>
 <body class="main-page-body">
 <!--header-->
@@ -45,35 +47,53 @@
 <br>
 <span class="label label-default time" >User Id : {{session['user_name']}}</span> </br></br>
   <span class="label label-default time" >Email : {{session['user_email']}}</span> <br></br>
-  <span class="label label-default time" >Number Of Posts : 1</span> 
+  <span class="label label-default time" >Number Of Posts : {{post_count}}</span> 
 </div></div>
 </div>
 <br>
 <br>
 <ul class="nav nav-tabs">
-  <li class="active"><a href="#">Recent Posts</a></li>
-  <li><a href="#">Popular Posts</a></li>
-  <li><a href="#">My Intrests</a></li>
+  <li id="recent" class="active"><a href="javascript:void(0);" id="recent_link">Recent Posts</a></li>
+  <li id="popular"><a href="javascript:void(0);" id="popular_link">Popular Posts</a></li>
+  <li id="interest"><a href="javascript:void(0);" id="interest_link">My Intrests</a></li>
 </ul>
+<div id="recent_posts">
 
-<div class="row post">
-  <div class="col-md-3">
-  <span class="date glyphicon glyphicon-list-alt"></span> <span class="date ">12-2-2014</span><br>
-  <span class="time glyphicon glyphicon-time"></span> <span class="time "> 12:00 Pm </span><br>
-  <span class="glyphicon glyphicon-tags time"> Tags:</span><br>
-  <div class="tags"> 
-  <a href="#">tag1</a> , <a href="#">tag2</a>, <a href="#">tag3</a>, <a href="#">tag4</a>, <a href="#">tag5</a>
-  </div>
-  <div class="time">Description</div>
-  <div class="description">
-    For performance reasons, all icons require a base class and individual icon class. To use, place the following code just about anywhere. Be sure to leave a space between the icon and text for proper padding. 
-  </div>
-  </div>
-  <div class="col-md-8">
-<img src="uploads/images.jpeg" height="400"  />
 </div>
-</div>
+<div id="popular_posts">
 
+</div>
+<div id="my_intrests">
+  
+</div>
+<script >
+$(function(){
+  $('#recent_link').click(function(){
+    $('#popular_posts').hide() ;
+    $('#my_intrests').hide();
+    $('#recent_posts').show();
+    $("#popular").removeClass('active');
+    $("#recent").addClass('active');
+    $("#interest").removeClass('active');
+  });
+    $('#popular_link').click(function(){
+    $('#recent_posts').hide(); 
+    $('#my_intrests').hide(); 
+    $('#popular_posts').show();
+    $("#popular").addClass('active');
+    $("#recent").removeClass('active');
+    $("#interest").removeClass('active');
+  });
+  $('#interest_link').click(function(){
+    $('#popular_posts').hide(); 
+    $('#recent_posts').hide();
+    $('#my_intrests').show(); 
+    $("#popular").removeClass('active');
+    $("#recent").removeClass('active');
+    $("#interest").addClass('active');
+  });
+});
+</script>
 <!-- Main page ends here -->
 
 <!-- Modal window starts here -->
@@ -93,6 +113,7 @@
         <span>Add files...</span>
         <!-- The file input field used as target for the file upload widget -->
         <input id="fileupload" type="file" name="data_file">
+        <input type="hidden" id="image_path" value="">
     </span></span>
     <span class="col-md-4" id=""></span>
 <span class="col-md-4" style="margin-top:-10px;"><span class="glyphicon btn-lg glyphicon-screenshot"></span> &nbsp <span id="client_ip"></span></span>
@@ -122,19 +143,46 @@
 <script>
 $('#image_post_btn').click(function(){
   var selected_values=$('.chosen-select').val();
+  var d = new Date();
 $.ajax({
         type : "POST",
         url : "/post_image",
         data: {description: $('#description').val()
-        ,tags: String($('.chosen-select').val())},
+        ,tags: String($('.chosen-select').val()),date_time: String(d.getTime()),image_path:$("#image_path").val()},
         beforeSend: function(){
-          alert( $('.chosen-select').val());
+          //alert( $('.chosen-select').val());
+          $('#image_post_btn').html('<span class="fa fa-spinner fa-spin"></span> Posting...');
+          
         },
         success: function(result) {
-            console.log($('.chosen-select').val());
+            $('#postImage').modal('toggle');
+            get_recentposts();
+            console.log(result);
+
         }
     });
 });
+</script>
+<!-- get recent posts -->
+<script >
+  function get_recentposts(){
+  $.ajax({
+        type : "POST",
+        url : "/recent_posts",
+        data: {description:'recent_posts'},
+        beforeSend: function(){
+          //alert( $('.chosen-select').val());
+          $('#recent_posts').html('<center><img src="{{ url_for('static',filename='images/loading.gif')}}"/></center>')
+        },
+        success: function(result) {
+          setTimeout(function(){
+          $('#recent_posts').html(result);
+        },1000);
+      }
+
+    });
+  }
+
 </script>
 <!-- modal window onClose operations -->
 <script>
@@ -174,6 +222,7 @@ $(function () {
   //initialize();
     'use strict';
     $("#client_ip").html(''+geoip_city());
+    get_recentposts();
     // Change this to the location of your server-side upload handler:
     var url = window.location.hostname === 'blueimp.github.io' ?
                 '//jquery-file-upload.appspot.com/' : '/+upload';
@@ -192,6 +241,7 @@ $(function () {
                 $('#progress .progress-bar').css(
                 'width','0%'
               );
+                $("#image_path").val(data.url);
                 $('#progress').hide();
                 //$('#progress').hide();
           

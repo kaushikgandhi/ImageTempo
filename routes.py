@@ -7,6 +7,8 @@ from werkzeug import secure_filename
 import urllib
 from functools import wraps
 import json
+from time import gmtime, strftime
+import datetime
 # from flask_bootstrap import Bootstrap
 # from flask_appconfig import AppConfig
 app =  Flask(__name__)
@@ -24,7 +26,7 @@ def login_required(test):
 			return redirect(url_for('login'))
 	return wrap
 
-
+#---------------------------- login page --------------------------
 @app.route('/',methods=["GET","POST"])
 @app.route('/index',methods=["GET","POST"])
 @app.route('/login',methods=["GET","POST"])
@@ -55,6 +57,9 @@ def index():
 			return render_template('index.html' , error=error)
 	return render_template('index.html' , error=error)
 
+
+
+#-------------------------Register page------------------------
 @app.route('/register',methods=["GET","POST"])
 def register():
 	error=None
@@ -76,25 +81,21 @@ def register():
 	return render_template('register.html' , error=error)
 
 
+#------------------------ Dashboard --------------------
+
 @app.route('/dashboard')
 def dashboard():
+	db = MySQLdb.connect(user=config.DB_USERNAME, passwd=config.DB_PASSWORD, db=config.DB_NAME)
+	cursor = db.cursor(MySQLdb.cursors.DictCursor)
+	cursor.execute('select count(*) from POST where user_name = %s',[session['user_name']])
+	result=cursor.fetchall()
 	if 'logged_in' not in session:
 		flash('you need to login first')
 		return redirect(url_for('index'))
-	return render_template('dashboard.html')
+	return render_template('dashboard.html',post_count=result[0]['count(*)'])
 
 
-@app.route('/configure_tables')
-def create_tables():
-	db = MySQLdb.connect(user=config.DB_USERNAME, passwd=config.DB_PASSWORD, db=config.DB_NAME)
-	cursor = db.cursor(MySQLdb.cursors.DictCursor)
-	cursor.execute('Create Table User(user_email varchar(50) ,user_name varchar(50),password varchar(100),PRIMARY KEY(user_name,user_email))')
-	cursor.execute('Insert into User values("admin@admin.com","admin","admin")')
-	cursor.execute('Insert into User values("demo@demo.com","demo","demo")')
-	db.commit()
-	db.close()
-	return "done"
-
+#-------------------logout--------------------
 
 @app.route('/logout')
 def logout():
@@ -104,16 +105,44 @@ def logout():
 	session.pop('logged_in',None)
 	flash('You have logged out Successfully!')
 	return redirect(url_for('index'))
+
+
+#---------------------Recent posts-----------------
+@app.route('/recent_posts',methods=["GET","POST"])
+@app.route('/recent_posts')
+def recent_posts():
+	db = MySQLdb.connect(user=config.DB_USERNAME, passwd=config.DB_PASSWORD, db=config.DB_NAME)
+	cursor = db.cursor(MySQLdb.cursors.DictCursor)
+	cursor.execute('select date_time, image_path, tags, description from POST where user_name = %s ORDER BY date_time DESC LIMIT 10',[session['user_name']])
+	rows={}
+	rows['table'] = cursor.fetchall()
+	if len(rows['table']) is 0:
+		return "<br><br><div class='alert alert-info'><center>Nothing Found</center></div>"
+	recent_posts = []
+	for row in range(len(rows['table'])):
+		recent_posts.append(dict(image_path=rows['table'][row]['image_path'],
+			description=rows['table'][row]['description'],date_time=rows['table'][row]['date_time'],tags=rows['table'][row]['tags']))
+		print rows['table'][row]['image_path']
+		#row = cursor.fetchone()
+	#posts=jsonify(recent_posts)
+	db.close()
+	return render_template('recent_posts.html',posts=recent_posts)
+	#return render_template('recent_posts.html')
+
 #-------------Post an Image---------------
 
 @app.route('/post_image',methods=["GET","POST"])
 def post_image():
-	print 'hi'
 	if request.method == 'POST'	:
 		#flash(request.form['tags'])
 		try:
-			print str(request.form['tags'])
-			return request.form['tags']
+			db = MySQLdb.connect(user=config.DB_USERNAME, passwd=config.DB_PASSWORD, db=config.DB_NAME)
+			cursor = db.cursor(MySQLdb.cursors.DictCursor)
+			cursor.execute('''INSERT into POST (user_name,tags,description,image_path,date_time)
+            	values (%s,%s,%s,%s,%s)''',(session['user_name'],request.form['tags'],request.form['description'],request.form['image_path'], datetime.datetime.now()))
+			db.commit()
+			db.close()
+			return "Your Post Is Successful!"
 		except Exception as e:
 			print str(e)
 			return request.form['description']+str(e)
@@ -130,7 +159,7 @@ def save_file(data_file, file_name):
 
     #del dump
 	return 
-
+#-------------------- get uploaded files ----------------
 @app.route('/uploads/<filename>')
 def uploaded_file(filename):
     return send_from_directory(config.UPLOAD_FOLDER,
@@ -178,6 +207,52 @@ def upload():
                        thumbnail=thumbnail_url)
 
 #--------------------------uploader ends --------------------------
+#--------------------helper functions--------------------
+@app.template_filter('get_date')
+def get_date(date):
+	f = '%Y-%m-%d %H:%M:%S.%f'
+	correct_date=datetime.datetime.strptime(date, f)
+	new_f='%Y-%m-%d'
+	return correct_date.strftime(new_f)
 
+@app.template_filter('get_time')
+def get_time(time):
+	f = '%Y-%m-%d %H:%M:%S.%f'
+	correct_date=datetime.datetime.strptime(time, f)
+	new_f='%H:%M:%S'
+	return correct_date.strftime(new_f)
+@app.template_filter('tags')
+def get_tags(tags):
+	print tags
+	tag_split=tags.split(',')
+	tag_html=''
+	for tag in tag_split:
+		tag_html+='<a href="'+tag+'">'+tag+'</a>'
+	return str(tag_html)
+
+app.jinja_env.filters['get_date'] = get_date
+app.jinja_env.filters['get_time'] = get_time
+app.jinja_env.filters['get_tags'] = get_tags
+#------------------------- Configurations ------------------------
+
+@app.route('/configure_user_table')
+def create_user_table():
+	db = MySQLdb.connect(user=config.DB_USERNAME, passwd=config.DB_PASSWORD, db=config.DB_NAME)
+	cursor = db.cursor(MySQLdb.cursors.DictCursor)
+	cursor.execute('Create Table User(user_email varchar(50) ,user_name varchar(50),password varchar(100),PRIMARY KEY(user_name,user_email))')
+	cursor.execute('Insert into User values("admin@admin.com","admin","admin")')
+	cursor.execute('Insert into User values("demo@demo.com","demo","demo")')
+	db.commit()
+	db.close()
+	return "done"
+
+@app.route('/configure_post_table')
+def create_post_table():
+	db = MySQLdb.connect(user=config.DB_USERNAME, passwd=config.DB_PASSWORD, db=config.DB_NAME)
+	cursor = db.cursor(MySQLdb.cursors.DictCursor)
+	cursor.execute('Create Table POST(post_id int NOT NULL AUTO_INCREMENT ,user_name varchar(50),description Text,tags varchar(500),image_path varchar(100),date_time varchar(50),PRIMARY KEY(post_id,user_name,image_path))')
+	db.commit()
+	db.close()
+	return "done"
 if __name__ == '__main__':
 	app.run(debug=True,host='0.0.0.0', port=8080)
