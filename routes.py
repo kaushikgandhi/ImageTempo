@@ -85,13 +85,13 @@ def register():
 
 @app.route('/dashboard')
 def dashboard():
+	if 'logged_in' not in session:
+		flash('you need to login first')
+		return redirect(url_for('index'))
 	db = MySQLdb.connect(user=config.DB_USERNAME, passwd=config.DB_PASSWORD, db=config.DB_NAME)
 	cursor = db.cursor(MySQLdb.cursors.DictCursor)
 	cursor.execute('select count(*) from POST where user_name = %s',[session['user_name']])
 	result=cursor.fetchall()
-	if 'logged_in' not in session:
-		flash('you need to login first')
-		return redirect(url_for('index'))
 	return render_template('dashboard.html',post_count=result[0]['count(*)'])
 
 
@@ -111,23 +111,41 @@ def logout():
 @app.route('/recent_posts',methods=["GET","POST"])
 @app.route('/recent_posts')
 def recent_posts():
+	if 'logged_in' not in session:
+		flash('you need to login first')
+		return redirect(url_for('index'))
+	flag=None
+	if request.method == 'POST'	:
+		if request.form['description'] == 'recent_posts_by_all':
+			flag=True
 	db = MySQLdb.connect(user=config.DB_USERNAME, passwd=config.DB_PASSWORD, db=config.DB_NAME)
 	cursor = db.cursor(MySQLdb.cursors.DictCursor)
-	cursor.execute('select date_time, image_path, tags, description from POST where user_name = %s ORDER BY date_time DESC LIMIT 10',[session['user_name']])
+	if flag is None	:
+		cursor.execute('select post_id,likes,date_time, image_path, tags, description,user_name from POST where user_name = %s ORDER BY date_time DESC LIMIT 10',[session['user_name']])
+	else:
+		cursor.execute('select post_id,likes,date_time, image_path, tags, description,user_name from POST ORDER BY date_time DESC LIMIT 10')
+
 	rows={}
 	rows['table'] = cursor.fetchall()
 	if len(rows['table']) is 0:
 		return "<br><br><div class='alert alert-info'><center>Nothing Found</center></div>"
 	recent_posts = []
 	for row in range(len(rows['table'])):
-		recent_posts.append(dict(image_path=rows['table'][row]['image_path'],
-			description=rows['table'][row]['description'],date_time=rows['table'][row]['date_time'],tags=rows['table'][row]['tags']))
-		print rows['table'][row]['image_path']
-		#row = cursor.fetchone()
-	#posts=jsonify(recent_posts)
+		likes={}
+		cursor.execute('select * from USER_LIKES where post_id = %s AND user_name= %s',[rows['table'][row]['post_id'],session['user_name']])
+		likes['table']=cursor.fetchall()
+		liked=True
+		print 'might be',len(likes['table'])
+		if len(likes['table']) <= 0:
+
+			liked=False
+		recent_posts.append(dict(post_id=rows['table'][row]['post_id'],image_path=rows['table'][row]['image_path'],
+			description=rows['table'][row]['description'],
+			date_time=rows['table'][row]['date_time'],
+			tags=rows['table'][row]['tags']
+			,user_name=rows['table'][row]['user_name'],likes=rows['table'][row]['likes'],liked=liked))
 	db.close()
 	return render_template('recent_posts.html',posts=recent_posts)
-	#return render_template('recent_posts.html')
 
 #-------------Post an Image---------------
 
@@ -146,6 +164,27 @@ def post_image():
 		except Exception as e:
 			print str(e)
 			return request.form['description']+str(e)
+#------------------Like a photo  ----------------
+
+@app.route('/like_post',methods=["GET","POST"])
+def like_post():
+	if request.method == 'POST'	:
+		try:
+			db = MySQLdb.connect(user=config.DB_USERNAME, passwd=config.DB_PASSWORD, db=config.DB_NAME)
+			cursor = db.cursor(MySQLdb.cursors.DictCursor)
+			cursor.execute('update POST SET likes = likes + 1 WHERE post_id= %s ',[request.form['post_id']])
+			cursor.execute('Insert into USER_LIKES (post_id,user_name) values(%s,%s)',(request.form['post_id'],session['user_name']))
+			db.commit()
+			db.close()
+			return "Your Post Is Successful!"
+		except Exception as e:
+			print str(e)
+			return request.form['description']+str(e)
+
+#------------------Photos --------------------------
+@app.route("/photos")
+def photos():
+	return render_template('photos.html')
 
 #--------------uploader -------------------
 def save_file(data_file, file_name):
@@ -159,12 +198,14 @@ def save_file(data_file, file_name):
 
     #del dump
 	return 
+
+
+
 #-------------------- get uploaded files ----------------
 @app.route('/uploads/<filename>')
 def uploaded_file(filename):
     return send_from_directory(config.UPLOAD_FOLDER,
                                filename)
-
 
 
 @app.route('/+upload', methods=['GET', 'POST'])
@@ -250,7 +291,21 @@ def create_user_table():
 def create_post_table():
 	db = MySQLdb.connect(user=config.DB_USERNAME, passwd=config.DB_PASSWORD, db=config.DB_NAME)
 	cursor = db.cursor(MySQLdb.cursors.DictCursor)
-	cursor.execute('Create Table POST(post_id int NOT NULL AUTO_INCREMENT ,user_name varchar(50),description Text,tags varchar(500),image_path varchar(100),date_time varchar(50),PRIMARY KEY(post_id,user_name,image_path))')
+	try:
+		cursor.execute('DROP TABLE POST');
+		db.commit()
+	except:
+		print 'table not found'
+	cursor.execute('Create Table POST(post_id int NOT NULL AUTO_INCREMENT ,user_name varchar(50),description Text,tags varchar(500),image_path varchar(100),date_time varchar(50),likes int DEFAULT 0,location varchar(50),PRIMARY KEY(post_id,user_name,image_path))')
+	db.commit()
+	db.close()
+	return "done"
+
+@app.route('/configure_user_likes_table')
+def configure_user_likes_table():
+	db = MySQLdb.connect(user=config.DB_USERNAME, passwd=config.DB_PASSWORD, db=config.DB_NAME)
+	cursor = db.cursor(MySQLdb.cursors.DictCursor)
+	cursor.execute('Create Table USER_LIKES(id int NOT NULL AUTO_INCREMENT ,user_name varchar(50),post_id int, PRIMARY KEY(id))')
 	db.commit()
 	db.close()
 	return "done"

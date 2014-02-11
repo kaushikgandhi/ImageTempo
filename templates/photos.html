@@ -23,7 +23,7 @@
    
        <a href="#" class="btn btn-large btn-white" data-toggle="modal" data-target="#postImage">
        <span class="glyphicon glyphicon-plus-sign"></span> Add Image</a>
-       <a href="/photos" class="btn btn-large btn-white">
+       <a href="#" class="btn btn-large btn-white" data-toggle="modal" data-target="#postImage">
        <span class="glyphicon glyphicon-picture"></span> Browse Images</a>
     </div>
     <div class="btn-group" style="float:right">
@@ -41,20 +41,10 @@
 <!--          main body of the page starts from here       -->
 
 <br>
-<div class="row">
-<div class="col-md-2"><div class="user avatar"></div></div>
-<div class="col-md-4"><div class="UserInfo">
-<br>
-<span class="label label-default time" >User Id : {{session['user_name']}}</span> </br></br>
-  <span class="label label-default time" >Email : {{session['user_email']}}</span> <br></br>
-  <span class="label label-default time" >Number Of Posts : {{post_count}}</span> 
-</div></div>
-</div>
-<br>
-<br>
+
 <ul class="nav nav-tabs">
-  <li id="recent" class="active"><a href="javascript:void(0);" id="recent_link">My Recent Posts</a></li>
-  <li id="popular"><a href="javascript:void(0);" id="popular_link">My Popular Posts</a></li>
+  <li id="recent" class="active"><a href="javascript:void(0);" id="recent_link">Recent Posts</a></li>
+  <li id="popular"><a href="javascript:void(0);" id="popular_link">Popular Posts</a></li>
   <li id="interest"><a href="javascript:void(0);" id="interest_link">My Intrests</a></li>
 </ul>
 <div id="recent_posts">
@@ -170,7 +160,7 @@ $.ajax({
   $.ajax({
         type : "POST",
         url : "/recent_posts",
-        data: {description:'recent_posts'},
+        data: {description:'recent_posts_by_all'},
         beforeSend: function(){
           //alert( $('.chosen-select').val());
           $('#recent_posts').html('<center><img src="{{ url_for('static',filename='images/loading.gif')}}"/></center>')

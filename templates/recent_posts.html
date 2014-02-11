@@ -7,11 +7,20 @@
   <span class="time glyphicon glyphicon-time"></span> <span class="time "> {{ post.date_time | get_time }} </span><br>
   <span class="glyphicon glyphicon-tags time"> Tags:</span><br>
   {% for tag in post.tags.split(',') %}
-  <a href="/tags/{{ tag }}">{{tag}}</a> ,
+  <a href="/tags/{{ tag }}">#{{tag}}</a> ,
   {% endfor %}
   <div class="time">Description</div>
   <div class="description">
     {{ post.description }}
+  </div>
+  <div class="time">Posted By: </div><a href="/profile/{{post.user_name}}">{{post.user_name}}</a>
+ 
+  <div class="time">Show Love:</div>
+  <a href="javascript:void(0);" onclick="like_it(this);" postId="{{ post.post_id }}" class="btn btn-default{% if post.liked == True %} btn-danger {% endif %}" {% if post.liked == True %} disabled {% endif %}><div class="glyphicon glyphicon-heart-empty"> </div></a> <span id="no_likes{{ post.post_id }}">{{ post.likes }}</span> Likes
+  <div id="liked_it{{ post.post_id }}">
+  {% if post.liked == True %}
+  <br> You have like it.
+  {% endif %}
   </div>
   </div>
   <div class="col-md-8">
@@ -22,3 +31,24 @@
 <hr>
 
 {% endfor %}
+
+<script>
+function like_it(ths){
+  $.ajax({
+        type : "POST",
+        url : "/like_post",
+        data: { post_id:$(ths).attr('postId') },
+        beforeSend: function(){
+          //alert($(ths).attr('postId'));
+        },
+        success: function(result) {
+          $(ths).removeClass("btn-default");
+          $(ths).addClass("btn-danger");
+          $("#no_likes"+$(ths).attr('postId')).html(parseInt($("#no_likes"+$(ths).attr('postId')).html())+1);
+          $("#liked_it"+$(ths).attr('postId')).html("You have just liked it");
+          $(ths).attr('disabled','disabled');
+      }
+
+    });
+}
+</script>
