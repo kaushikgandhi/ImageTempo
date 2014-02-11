@@ -147,6 +147,45 @@ def recent_posts():
 	db.close()
 	return render_template('recent_posts.html',posts=recent_posts)
 
+#----------------------Popular posts--------------------
+@app.route('/popular_posts',methods=["GET","POST"])
+@app.route('/popular_posts')
+def popular_posts():
+	if 'logged_in' not in session:
+		flash('you need to login first')
+		return redirect(url_for('index'))
+	flag=None
+	if request.method == 'POST'	:
+		if request.form['description'] == 'popular_posts_by_all':
+			flag=True
+	db = MySQLdb.connect(user=config.DB_USERNAME, passwd=config.DB_PASSWORD, db=config.DB_NAME)
+	cursor = db.cursor(MySQLdb.cursors.DictCursor)
+	if flag is None	:
+		cursor.execute('select post_id,likes,date_time, image_path, tags, description,user_name from POST where user_name = %s ORDER BY date_time DESC , likes DESC LIMIT 10',[session['user_name']])
+	else:
+		cursor.execute('select post_id,likes,date_time, image_path, tags, description,user_name from POST ORDER BY likes DESC ,date_time DESC    LIMIT 10')
+
+	rows={}
+	rows['table'] = cursor.fetchall()
+	if len(rows['table']) is 0:
+		return "<br><br><div class='alert alert-info'><center>Nothing Found</center></div>"
+	recent_posts = []
+	for row in range(len(rows['table'])):
+		likes={}
+		cursor.execute('select * from USER_LIKES where post_id = %s AND user_name= %s',[rows['table'][row]['post_id'],session['user_name']])
+		likes['table']=cursor.fetchall()
+		liked=True
+		print 'might be',len(likes['table'])
+		if len(likes['table']) <= 0:
+
+			liked=False
+		recent_posts.append(dict(post_id=rows['table'][row]['post_id'],image_path=rows['table'][row]['image_path'],
+			description=rows['table'][row]['description'],
+			date_time=rows['table'][row]['date_time'],
+			tags=rows['table'][row]['tags']
+			,user_name=rows['table'][row]['user_name'],likes=rows['table'][row]['likes'],liked=liked))
+	db.close()
+	return render_template('recent_posts.html',posts=recent_posts)
 #-------------Post an Image---------------
 
 @app.route('/post_image',methods=["GET","POST"])
@@ -184,6 +223,9 @@ def like_post():
 #------------------Photos --------------------------
 @app.route("/photos")
 def photos():
+	if 'logged_in' not in session:
+		flash('you need to login first')
+		return redirect(url_for('index'))
 	return render_template('photos.html')
 
 #--------------uploader -------------------
@@ -248,6 +290,8 @@ def upload():
                        thumbnail=thumbnail_url)
 
 #--------------------------uploader ends --------------------------
+
+
 #--------------------helper functions--------------------
 @app.template_filter('get_date')
 def get_date(date):

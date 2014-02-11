@@ -83,6 +83,7 @@ $(function(){
     $("#popular").addClass('active');
     $("#recent").removeClass('active');
     $("#interest").removeClass('active');
+    get_popularposts();
   });
   $('#interest_link').click(function(){
     $('#popular_posts').hide(); 
@@ -178,6 +179,27 @@ $.ajax({
         success: function(result) {
           setTimeout(function(){
           $('#recent_posts').html(result);
+        },1000);
+      }
+
+    });
+  }
+
+</script>
+<!-- get popular posts -->
+<script >
+  function get_popularposts(){
+  $.ajax({
+        type : "POST",
+        url : "/popular_posts",
+        data: {description:'popular_posts'},
+        beforeSend: function(){
+          //alert( $('.chosen-select').val());
+          $('#popular_posts').html('<center><img src="{{ url_for('static',filename='images/loading.gif')}}"/></center>')
+        },
+        success: function(result) {
+          setTimeout(function(){
+          $('#popular_posts').html(result);
         },1000);
       }
 

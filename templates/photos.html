@@ -23,7 +23,7 @@
    
        <a href="#" class="btn btn-large btn-white" data-toggle="modal" data-target="#postImage">
        <span class="glyphicon glyphicon-plus-sign"></span> Add Image</a>
-       <a href="#" class="btn btn-large btn-white" data-toggle="modal" data-target="#postImage">
+       <a href="/photos" class="btn btn-large btn-white" >
        <span class="glyphicon glyphicon-picture"></span> Browse Images</a>
     </div>
     <div class="btn-group" style="float:right">
@@ -45,7 +45,7 @@
 <ul class="nav nav-tabs">
   <li id="recent" class="active"><a href="javascript:void(0);" id="recent_link">Recent Posts</a></li>
   <li id="popular"><a href="javascript:void(0);" id="popular_link">Popular Posts</a></li>
-  <li id="interest"><a href="javascript:void(0);" id="interest_link">My Intrests</a></li>
+  <li id="interest"><a href="javascript:void(0);" id="interest_link">Posts You May Like</a></li>
 </ul>
 <div id="recent_posts">
 
@@ -73,6 +73,7 @@ $(function(){
     $("#popular").addClass('active');
     $("#recent").removeClass('active');
     $("#interest").removeClass('active');
+    get_popularposts();
   });
   $('#interest_link').click(function(){
     $('#popular_posts').hide(); 
@@ -168,6 +169,28 @@ $.ajax({
         success: function(result) {
           setTimeout(function(){
           $('#recent_posts').html(result);
+        },1000);
+      }
+
+    });
+  }
+
+</script>
+
+<!-- get popular posts -->
+<script >
+  function get_popularposts(){
+  $.ajax({
+        type : "POST",
+        url : "/popular_posts",
+        data: {description:'popular_posts_by_all'},
+        beforeSend: function(){
+          //alert( $('.chosen-select').val());
+          $('#popular_posts').html('<center><img src="{{ url_for('static',filename='images/loading.gif')}}"/></center>')
+        },
+        success: function(result) {
+          setTimeout(function(){
+          $('#popular_posts').html(result);
         },1000);
       }
 

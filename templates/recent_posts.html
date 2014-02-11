@@ -19,7 +19,7 @@
   <a href="javascript:void(0);" onclick="like_it(this);" postId="{{ post.post_id }}" class="btn btn-default{% if post.liked == True %} btn-danger {% endif %}" {% if post.liked == True %} disabled {% endif %}><div class="glyphicon glyphicon-heart-empty"> </div></a> <span id="no_likes{{ post.post_id }}">{{ post.likes }}</span> Likes
   <div id="liked_it{{ post.post_id }}">
   {% if post.liked == True %}
-  <br> You have like it.
+   You have like it.
   {% endif %}
   </div>
   </div>
