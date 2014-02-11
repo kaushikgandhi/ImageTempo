@@ -75,6 +75,9 @@ $(function(){
     $("#popular").removeClass('active');
     $("#recent").addClass('active');
     $("#interest").removeClass('active');
+    $('#my_intrests').html('');
+    $('#popular_posts').html('');
+    get_recentposts();
   });
     $('#popular_link').click(function(){
     $('#recent_posts').hide(); 
@@ -83,6 +86,8 @@ $(function(){
     $("#popular").addClass('active');
     $("#recent").removeClass('active');
     $("#interest").removeClass('active');
+    $('#recent_posts').html('');
+    $('#my_intrests').html('');
     get_popularposts();
   });
   $('#interest_link').click(function(){
@@ -92,6 +97,8 @@ $(function(){
     $("#popular").removeClass('active');
     $("#recent").removeClass('active');
     $("#interest").addClass('active');
+    $('#recent_posts').html('');
+    $('#popular_posts').html('');
   });
 });
 </script>
