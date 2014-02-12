@@ -89,6 +89,7 @@ $(function(){
     $("#interest").addClass('active');
     $('#recent_posts').html('');
     $('#popular_posts').html('');
+    get_posts_you_may_like();
   });
 });
 </script>
@@ -176,7 +177,7 @@ $.ajax({
         success: function(result) {
           setTimeout(function(){
           $('#recent_posts').html(result);
-        },1000);
+        },100);
       }
 
     });
@@ -184,6 +185,25 @@ $.ajax({
 
 </script>
 
+<script >
+  function get_posts_you_may_like(){
+  $.ajax({
+        type : "POST",
+        url : "/get_posts_you_may_like",
+        data: {description:'recent_posts_by_all'},
+        beforeSend: function(){
+          $('#my_intrests').html('<center><img src="{{ url_for('static',filename='images/loading.gif')}}"/></center>')
+        },
+        success: function(result) {
+          setTimeout(function(){
+          $('#my_intrests').html(result);
+        },100);
+      }
+
+    });
+  }
+
+</script>
 <!-- get popular posts -->
 <script >
   function get_popularposts(){
@@ -198,7 +218,7 @@ $.ajax({
         success: function(result) {
           setTimeout(function(){
           $('#popular_posts').html(result);
-        },1000);
+        },100);
       }
 
     });

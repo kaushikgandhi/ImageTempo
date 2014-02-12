@@ -161,7 +161,7 @@ def popular_posts():
 	db = MySQLdb.connect(user=config.DB_USERNAME, passwd=config.DB_PASSWORD, db=config.DB_NAME)
 	cursor = db.cursor(MySQLdb.cursors.DictCursor)
 	if flag is None	:
-		cursor.execute('select post_id,likes,date_time, image_path, tags, description,user_name from POST where user_name = %s ORDER BY date_time DESC , likes DESC LIMIT 10',[session['user_name']])
+		cursor.execute('select post_id,likes,date_time, image_path, tags, description,user_name from POST where user_name = %s ORDER BY likes DESC , date_time DESC  LIMIT 10',[session['user_name']])
 	else:
 		cursor.execute('select post_id,likes,date_time, image_path, tags, description,user_name from POST ORDER BY likes DESC ,date_time DESC    LIMIT 10')
 
@@ -186,6 +186,65 @@ def popular_posts():
 			,user_name=rows['table'][row]['user_name'],likes=rows['table'][row]['likes'],liked=liked))
 	db.close()
 	return render_template('recent_posts.html',posts=recent_posts)
+
+
+#------------------------Tags--------------------------
+@app.route('/get_posts_by_tag',methods=["GET","POST"])
+def get_posts_by_tag(tag=None):
+	db = MySQLdb.connect(user=config.DB_USERNAME, passwd=config.DB_PASSWORD, db=config.DB_NAME)
+	cursor = db.cursor(MySQLdb.cursors.DictCursor)
+	cursor.execute("select * from POST WHERE tags LIKE '%"+tag+"%' ORDER BY date_time DESC")
+	rows={}
+	rows['table'] = cursor.fetchall()
+	if len(rows['table']) is 0:
+		return "<br><br><div class='alert alert-info'><center>Nothing Found</center></div>"
+	recent_posts = []
+	for row in range(len(rows['table'])):
+		likes={}
+		cursor.execute('select * from USER_LIKES where post_id = %s AND user_name= %s',[rows['table'][row]['post_id'],session['user_name']])
+		likes['table']=cursor.fetchall()
+		liked=True
+		print 'might be',len(likes['table'])
+		if len(likes['table']) <= 0:
+			liked=False
+		recent_posts.append(dict(post_id=rows['table'][row]['post_id'],image_path=rows['table'][row]['image_path'],
+			description=rows['table'][row]['description'],
+			date_time=rows['table'][row]['date_time'],
+			tags=rows['table'][row]['tags']
+			,user_name=rows['table'][row]['user_name'],likes=rows['table'][row]['likes'],liked=liked))
+	db.close()
+	return recent_posts
+	
+
+#------------------ Post You May Like -----------------
+@app.route('/get_posts_you_may_like',methods=["GET","POST"])
+def get_posts_you_may_like():
+	db = MySQLdb.connect(user=config.DB_USERNAME, passwd=config.DB_PASSWORD, db=config.DB_NAME)
+	cursor = db.cursor(MySQLdb.cursors.DictCursor)
+	cursor.execute("SELECT tags FROM POST WHERE post_id IN (SELECT post_id FROM USER_LIKES WHERE user_name = %s) ",[session['user_name']])
+	liked_tags={}
+	liked_tags['table']=cursor.fetchall()
+	liked_posts={}	
+	recent_posts=[]
+	if len(liked_tags['table']) is 0:
+		return "<br><br><div class='alert alert-info'><center>No Interests Found. Do some activities and come to this section later.</center></div>"
+	splitted_str=[]
+	for row in range(len(liked_tags['table'])):
+		splitted_str=liked_tags['table'][row]['tags'].split(",")
+		for tag in splitted_str:
+			if(tag in liked_posts):
+				liked_posts[tag] += 1
+			else:
+				liked_posts[tag] = 1
+	sorted(liked_posts, key=lambda i: int(liked_posts[i]))
+	posts=[]
+	for tag in liked_posts.keys() :
+		posts=get_posts_by_tag(tag)
+		for post in posts:
+			if post not in recent_posts:
+				recent_posts.append(post)
+	return render_template('recent_posts.html',posts=recent_posts)
+
 #-------------Post an Image---------------
 
 @app.route('/post_image',methods=["GET","POST"])
