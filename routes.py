@@ -9,8 +9,8 @@ from functools import wraps
 import json
 from time import gmtime, strftime
 import datetime
-# from flask_bootstrap import Bootstrap
-# from flask_appconfig import AppConfig
+
+#---------------register the app -------------
 app =  Flask(__name__)
 app.config.from_object('config')
 app.secret_key = 'dfmm234xdsfdfssf2133edssdgfqwewqewr'
@@ -215,6 +215,13 @@ def get_posts_by_tag(tag=None):
 	db.close()
 	return recent_posts
 	
+
+#-------------------get all posts of a tag-------------------
+@app.route('/tags/<tag>',methods=["GET","POST"])
+def tag_posts(tag=None):
+	posts=get_posts_by_tag(tag)
+	return render_template("tag_posts.html",posts=posts,tag=tag)
+
 
 #------------------ Post You May Like -----------------
 @app.route('/get_posts_you_may_like',methods=["GET","POST"])
