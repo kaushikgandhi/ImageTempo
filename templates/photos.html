@@ -155,10 +155,10 @@ $.ajax({
         },
         success: function(result) {
             $('#postImage').modal('toggle');
-            get_recentposts();
+            //get_recentposts();
             console.log(result);
             $('#image_post_btn').html('Post');
-
+            $('#recent_link').click();
         }
     });
 });

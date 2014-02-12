@@ -167,10 +167,10 @@ $.ajax({
         },
         success: function(result) {
             $('#postImage').modal('toggle');
-            get_recentposts();
+            //get_recentposts();
             console.log(result);
             $('#image_post_btn').html('Post');
-
+            window.location.assign('/dashboard');
         }
     });
 });
@@ -217,7 +217,7 @@ $(function () {
   //initialize();
     'use strict';
     $("#client_ip").html(''+geoip_city());
-    get_recentposts();
+    //get_recentposts();
     // Change this to the location of your server-side upload handler:
     var url = window.location.hostname === 'blueimp.github.io' ?
                 '//jquery-file-upload.appspot.com/' : '/+upload';

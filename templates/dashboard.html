@@ -158,15 +158,15 @@ $.ajax({
         data: {description: $('#description').val()
         ,tags: String($('.chosen-select').val()),date_time: String(d.getTime()),image_path:$("#image_path").val()},
         beforeSend: function(){
-          //alert( $('.chosen-select').val());
           $('#image_post_btn').html('<span class="fa fa-spinner fa-spin"></span> Posting...');
           
         },
         success: function(result) {
             $('#postImage').modal('toggle');
-            get_recentposts();
+            //get_recentposts();
             console.log(result);
             $('#image_post_btn').html('Post');
+            $('#recent_link').click();
 
         }
     });
