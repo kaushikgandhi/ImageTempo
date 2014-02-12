@@ -13,6 +13,11 @@
   <div class="description">
     {{ post.description }}
   </div>
+
+  <div id="location_details">
+  <span class="location-gif btn btn-default btn-lg " disabled></span>
+  <a target="_new" href="https://maps.google.com/maps?f=q&hl=en&q={{post.location}}&layer=&ie=UTF8&z=13&om=1&iwloc=addr"><span class="time">{{post.location}}</span></a>
+  </div>
   <div class="time">Posted By: </div><a href="/profile/{{post.user_name}}">{{post.user_name}}</a>
  
   <div class="time">Show Love:</div>

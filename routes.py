@@ -121,9 +121,9 @@ def recent_posts():
 	db = MySQLdb.connect(user=config.DB_USERNAME, passwd=config.DB_PASSWORD, db=config.DB_NAME)
 	cursor = db.cursor(MySQLdb.cursors.DictCursor)
 	if flag is None	:
-		cursor.execute('select post_id,likes,date_time, image_path, tags, description,user_name from POST where user_name = %s ORDER BY date_time DESC LIMIT 10',[session['user_name']])
+		cursor.execute('select location,post_id,likes,date_time, image_path, tags, description,user_name from POST where user_name = %s ORDER BY date_time DESC LIMIT 10',[session['user_name']])
 	else:
-		cursor.execute('select post_id,likes,date_time, image_path, tags, description,user_name from POST ORDER BY date_time DESC LIMIT 10')
+		cursor.execute('select location,post_id,likes,date_time, image_path, tags, description,user_name from POST ORDER BY date_time DESC LIMIT 10')
 
 	rows={}
 	rows['table'] = cursor.fetchall()
@@ -143,7 +143,7 @@ def recent_posts():
 			description=rows['table'][row]['description'],
 			date_time=rows['table'][row]['date_time'],
 			tags=rows['table'][row]['tags']
-			,user_name=rows['table'][row]['user_name'],likes=rows['table'][row]['likes'],liked=liked))
+			,user_name=rows['table'][row]['user_name'],likes=rows['table'][row]['likes'],liked=liked,location=rows['table'][row]['location']))
 	db.close()
 	return render_template('recent_posts.html',posts=recent_posts)
 
@@ -161,9 +161,9 @@ def popular_posts():
 	db = MySQLdb.connect(user=config.DB_USERNAME, passwd=config.DB_PASSWORD, db=config.DB_NAME)
 	cursor = db.cursor(MySQLdb.cursors.DictCursor)
 	if flag is None	:
-		cursor.execute('select post_id,likes,date_time, image_path, tags, description,user_name from POST where user_name = %s ORDER BY likes DESC , date_time DESC  LIMIT 10',[session['user_name']])
+		cursor.execute('select location,post_id,likes,date_time, image_path, tags, description,user_name from POST where user_name = %s ORDER BY likes DESC , date_time DESC  LIMIT 10',[session['user_name']])
 	else:
-		cursor.execute('select post_id,likes,date_time, image_path, tags, description,user_name from POST ORDER BY likes DESC ,date_time DESC    LIMIT 10')
+		cursor.execute('select location,post_id,likes,date_time, image_path, tags, description,user_name from POST ORDER BY likes DESC ,date_time DESC    LIMIT 10')
 
 	rows={}
 	rows['table'] = cursor.fetchall()
@@ -183,7 +183,7 @@ def popular_posts():
 			description=rows['table'][row]['description'],
 			date_time=rows['table'][row]['date_time'],
 			tags=rows['table'][row]['tags']
-			,user_name=rows['table'][row]['user_name'],likes=rows['table'][row]['likes'],liked=liked))
+			,user_name=rows['table'][row]['user_name'],likes=rows['table'][row]['likes'],liked=liked,location=rows['table'][row]['location']))
 	db.close()
 	return render_template('recent_posts.html',posts=recent_posts)
 
@@ -211,7 +211,7 @@ def get_posts_by_tag(tag=None):
 			description=rows['table'][row]['description'],
 			date_time=rows['table'][row]['date_time'],
 			tags=rows['table'][row]['tags']
-			,user_name=rows['table'][row]['user_name'],likes=rows['table'][row]['likes'],liked=liked))
+			,user_name=rows['table'][row]['user_name'],likes=rows['table'][row]['likes'],liked=liked,location=rows['table'][row]['location']))
 	db.close()
 	return recent_posts
 	
@@ -261,8 +261,8 @@ def post_image():
 		try:
 			db = MySQLdb.connect(user=config.DB_USERNAME, passwd=config.DB_PASSWORD, db=config.DB_NAME)
 			cursor = db.cursor(MySQLdb.cursors.DictCursor)
-			cursor.execute('''INSERT into POST (user_name,tags,description,image_path,date_time)
-            	values (%s,%s,%s,%s,%s)''',(session['user_name'],request.form['tags'],request.form['description'],request.form['image_path'], datetime.datetime.now()))
+			cursor.execute('''INSERT into POST (user_name,tags,description,image_path,date_time,location)
+            	values (%s,%s,%s,%s,%s,%s)''',(session['user_name'],request.form['tags'],request.form['description'],request.form['image_path'], datetime.datetime.now(),request.form['location']))
 			db.commit()
 			db.close()
 			return "Your Post Is Successful!"
@@ -403,6 +403,7 @@ def create_post_table():
 	cursor = db.cursor(MySQLdb.cursors.DictCursor)
 	try:
 		cursor.execute('DROP TABLE POST');
+		cursor.execute('DROP TABLE USER_LIKES');
 		db.commit()
 	except:
 		print 'table not found'

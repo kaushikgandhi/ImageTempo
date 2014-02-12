@@ -155,8 +155,9 @@ $('#image_post_btn').click(function(){
 $.ajax({
         type : "POST",
         url : "/post_image",
-        data: {description: $('#description').val()
-        ,tags: String($('.chosen-select').val()),date_time: String(d.getTime()),image_path:$("#image_path").val()},
+        data: {description: String($('#description').val())
+        ,tags: String($('.chosen-select').val()),date_time: String(d.getTime()),image_path:String($("#image_path").val()),
+        location:String($("#location_details").val())},
         beforeSend: function(){
           $('#image_post_btn').html('<span class="fa fa-spinner fa-spin"></span> Posting...');
           
@@ -245,6 +246,7 @@ $.ajax({
 <script src="{{ url_for('static',filename= 'file_upload/js/jquery.fileupload-video.js') }}"></script>
 <!-- The File Upload validation plugin -->
 <script src="{{ url_for('static',filename= 'file_upload/js/jquery.fileupload-validate.js') }}"></script>
+<input type="hidden" value="" id="location_details"/>
 <script>
 /*jslint unparam: true */
 /*global window, $ */
@@ -252,6 +254,7 @@ $(function () {
   //initialize();
     'use strict';
     $("#client_ip").html(''+geoip_city());
+    $("#location_details").val(geoip_city());
     get_recentposts();
     // Change this to the location of your server-side upload handler:
     var url = window.location.hostname === 'blueimp.github.io' ?
@@ -298,7 +301,6 @@ var dropDown = $('.chosen-select');
  $('.default').keypress( function (evt) {
   console.log(evt.which);
            var stroke, _ref, target, list;
-           // get keycode
            stroke = (_ref = evt.which) != null ? _ref : evt.keyCode;
            target = $(evt.target);               
            // get the list of current options
