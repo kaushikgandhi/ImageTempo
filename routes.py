@@ -95,6 +95,23 @@ def dashboard():
 	return render_template('dashboard.html',post_count=result[0]['count(*)'])
 
 
+#------------------------ Profile --------------------
+
+@app.route('/profile/<user_name>')
+def profile(user_name=None):
+	if 'logged_in' not in session:
+		flash('you need to login first')
+		return redirect(url_for('index'))
+	db = MySQLdb.connect(user=config.DB_USERNAME, passwd=config.DB_PASSWORD, db=config.DB_NAME)
+	cursor = db.cursor(MySQLdb.cursors.DictCursor)
+	cursor.execute('select count(*) from POST where user_name = %s',[user_name])
+	result=cursor.fetchall()
+	cursor.execute('select user_email from User where user_name = %s',[user_name])
+	Users=cursor.fetchall()
+	return render_template('profile.html',post_count=result[0]['count(*)'],user_name=user_name,user_email=Users[0]['user_email'])
+
+
+
 #-------------------logout--------------------
 
 @app.route('/logout')
@@ -109,19 +126,25 @@ def logout():
 
 #---------------------Recent posts-----------------
 @app.route('/recent_posts',methods=["GET","POST"])
+@app.route('/recent_posts/<user_name>',methods=["GET","POST"])
 @app.route('/recent_posts')
-def recent_posts():
+def recent_posts(user_name=None):
 	if 'logged_in' not in session:
 		flash('you need to login first')
 		return redirect(url_for('index'))
 	flag=None
+	user=None
+	if user_name is None:
+		user=session['user_name']
+	else:
+		user=user_name
 	if request.method == 'POST'	:
 		if request.form['description'] == 'recent_posts_by_all':
 			flag=True
 	db = MySQLdb.connect(user=config.DB_USERNAME, passwd=config.DB_PASSWORD, db=config.DB_NAME)
 	cursor = db.cursor(MySQLdb.cursors.DictCursor)
 	if flag is None	:
-		cursor.execute('select location,post_id,likes,date_time, image_path, tags, description,user_name from POST where user_name = %s ORDER BY date_time DESC LIMIT 10',[session['user_name']])
+		cursor.execute('select location,post_id,likes,date_time, image_path, tags, description,user_name from POST where user_name = %s ORDER BY date_time DESC LIMIT 10',[user])
 	else:
 		cursor.execute('select location,post_id,likes,date_time, image_path, tags, description,user_name from POST ORDER BY date_time DESC LIMIT 10')
 
@@ -132,7 +155,7 @@ def recent_posts():
 	recent_posts = []
 	for row in range(len(rows['table'])):
 		likes={}
-		cursor.execute('select * from USER_LIKES where post_id = %s AND user_name= %s',[rows['table'][row]['post_id'],session['user_name']])
+		cursor.execute('select * from USER_LIKES where post_id = %s AND user_name= %s',[rows['table'][row]['post_id'],user])
 		likes['table']=cursor.fetchall()
 		liked=True
 		print 'might be',len(likes['table'])
