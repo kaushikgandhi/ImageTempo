@@ -1,15 +1,20 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
-<div id="cloud"></div>
+<br>
+ <span class="row">
+    <span class="col-md-2"></span>
+    <span class="col-md-8" id="tag_cloud"> <div id="cloud"></div></span>
+  </span>
+
 <script src="{{ url_for('static',filename='cloud/lib/d3/d3.js')}}"></script>
 <script src="{{ url_for('static',filename='cloud/d3.layout.cloud.js')}}"></script>
 <script>
   var fill = d3.scale.category20();
 
   d3.layout.cloud().size([300, 300])
-      .words([
-        "Hello", "world", "normally", "you", "want", "more", "words",
-        "than", "this"].map(function(d) {
+      .words({% autoescape off %}
+    {{ posts }}
+{% endautoescape %}.map(function(d) {
         return {text: d, size: 10 + Math.random() * 90};
       }))
       .padding(5)

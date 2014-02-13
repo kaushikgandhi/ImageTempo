@@ -213,7 +213,25 @@ def popular_posts():
 
 @app.route('/tag_cloud',methods=["GET","POST"])
 def tag_cloud():
-	return render_template('word_cloud.html')
+	db = MySQLdb.connect(user=config.DB_USERNAME, passwd=config.DB_PASSWORD, db=config.DB_NAME)
+	cursor = db.cursor(MySQLdb.cursors.DictCursor)
+	cursor.execute("SELECT tags FROM POST WHERE post_id IN (SELECT post_id FROM USER_LIKES WHERE user_name = %s) ",[session['user_name']])
+	liked_tags={}
+	liked_tags['table']=cursor.fetchall()
+	liked_posts={}	
+	recent_posts=[]
+	if len(liked_tags['table']) is 0:
+		return "<br><br><div class='alert alert-info'><center>No Interests Found. Do some activities and come to this section later.</center></div>"
+	splitted_str=[]
+	for row in range(len(liked_tags['table'])):
+		splitted_str=liked_tags['table'][row]['tags'].split(",")
+		for tag in splitted_str:
+			if(tag in liked_posts):
+				liked_posts[tag] += 1
+			else:
+				liked_posts[tag] = 1
+	sorted(liked_posts, key=lambda i: int(liked_posts[i]))
+	return render_template('word_cloud.html',posts=liked_posts.keys())
 #------------------------Tags--------------------------
 @app.route('/get_posts_by_tag',methods=["GET","POST"])
 def get_posts_by_tag(tag=None):

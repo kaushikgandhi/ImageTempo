@@ -3,6 +3,10 @@
 @font-face {font-family: Endor; src: url('../fonts/ENDOR.ttf');}
 @font-face {font-family: Futura; src: url('../fonts/cpo.ttf');}
 @font-family-base{font-family: Futura; src: url('../fonts/cpo.ttf');}
+
+#tag_cloud{
+  border: 1px #CCCCCC solid;
+}
 .nav-bar-top{
 background:  none repeat scroll 0 0 #205081;
 height: 42px;
