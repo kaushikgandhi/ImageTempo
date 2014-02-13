@@ -158,8 +158,9 @@ $.ajax({
         url : "/post_image",
         data: {description: String($('#description').val())
         ,tags: String($('.chosen-select').val()),date_time: String(d.getTime()),image_path:String($("#image_path").val()),
-        location:String($("#location_details").val())},
+        location:String($("#client_ip").html())},
         beforeSend: function(){
+          //alert($("#client_ip").html());
           $('#image_post_btn').html('<span class="fa fa-spinner fa-spin"></span> Posting...');
           
         },
@@ -275,7 +276,7 @@ $(function () {
   //initialize();
     'use strict';
     $("#client_ip").html(''+geoip_city());
-    $("#location_details").val(geoip_city());
+    $("#location_details").val(''+geoip_city());
     get_recentposts();
     // Change this to the location of your server-side upload handler:
     var url = window.location.hostname === 'blueimp.github.io' ?

@@ -148,7 +148,7 @@ $.ajax({
         url : "/post_image",
         data: {description: String($('#description').val())
         ,tags: String($('.chosen-select').val()),date_time: String(d.getTime()),image_path:String($("#image_path").val()),
-        location:String($("#location_details").val())},
+        location:String($("#client_ip").html())},
         beforeSend: function(){
           //alert( $('.chosen-select').val());
           $('#image_post_btn').html('<span class="fa fa-spinner fa-spin"></span> Posting...');

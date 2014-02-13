@@ -9,7 +9,6 @@ from functools import wraps
 import json
 from time import gmtime, strftime
 import datetime
-
 #---------------register the app -------------
 app =  Flask(__name__)
 app.config.from_object('config')
@@ -43,7 +42,7 @@ def index():
 			db.close()
 			#flash(result)
 			#return redirect(url_for('index'))
-			if(result is not None):
+			if(result is not None and len(result)>0):
 				session['logged_in']=True
 				session['user_name']=request.form['user_name']
 				session['user_email']=result[0]['user_email']
