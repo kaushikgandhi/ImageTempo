@@ -58,7 +58,6 @@ def index():
 	return render_template('index.html' , error=error)
 
 
-
 #-------------------------Register page------------------------
 @app.route('/register',methods=["GET","POST"])
 def register():
@@ -210,7 +209,11 @@ def popular_posts():
 	db.close()
 	return render_template('recent_posts.html',posts=recent_posts)
 
+#-------------------------tag cloud----------------------
 
+@app.route('/tag_cloud',methods=["GET","POST"])
+def tag_cloud():
+	return render_template('word_cloud.html')
 #------------------------Tags--------------------------
 @app.route('/get_posts_by_tag',methods=["GET","POST"])
 def get_posts_by_tag(tag=None):

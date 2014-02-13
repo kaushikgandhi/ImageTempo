@@ -99,6 +99,7 @@ $(function(){
     $("#interest").addClass('active');
     $('#recent_posts').html('');
     $('#popular_posts').html('');
+    get_cloud();
   });
 });
 </script>
@@ -172,6 +173,26 @@ $.ajax({
         }
     });
 });
+</script>
+<script >
+  function get_cloud(){
+  $.ajax({
+        type : "POST",
+        url : "/tag_cloud",
+        data: {description:'recent_posts'},
+        beforeSend: function(){
+          //alert( $('.chosen-select').val());
+          $('#my_intrests').html('<center><img src="{{ url_for('static',filename='images/loading.gif')}}"/></center>')
+        },
+        success: function(result) {
+          setTimeout(function(){
+          $('#my_intrests').html(result);
+        },100);
+      }
+
+    });
+  }
+
 </script>
 <!-- get recent posts -->
 <script >
